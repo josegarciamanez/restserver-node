@@ -1,11 +1,12 @@
-const express = require('express');
-const bcrypt = require('bcrypt');
-const _ = require('underscore');
-const Usuario = require('../models/usuario');
+const express = require('express')
+const bcrypt = require('bcrypt')
+const _ = require('underscore')
+const Usuario = require('../models/usuario')
+const { verificaToken } = require('../middlewares/autenticacion')
 
 const app = express()
 
-app.get('/usuario', function(req, res) {
+app.get('/usuario', verificaToken, (req, res) => {
     let desde = req.query.desde || 0
     desde = Number(desde)
 
@@ -77,7 +78,7 @@ app.put('/usuario/:id', function(req, res) {
 })
 
 app.delete('/usuario/:id', function(req, res) {
-    let id = req.params.id;
+    let id = req.params.id
     let cambiaEstado = {
         estado: false
     }
@@ -89,7 +90,7 @@ app.delete('/usuario/:id', function(req, res) {
                 ok: false,
                 err
             })
-        };
+        }
         if (!usuarioBorrado) {
             return res.status(400).json({
                 ok: false,
@@ -97,13 +98,12 @@ app.delete('/usuario/:id', function(req, res) {
                     message: 'Usuario no encontrado'
                 }
             })
-        };
+        }
         res.json({
             ok: true,
             usuario: usuarioBorrado
         })
-
     })
 })
 
-module.exports = app;
+module.exports = app
